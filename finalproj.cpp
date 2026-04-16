@@ -5,7 +5,6 @@
 #include <queue>
 
 struct Node {
-    std::string name;
     std::string feeInfo;
     float amount;
     int urgency;
@@ -20,6 +19,8 @@ void searchFee();
 void updateFee();
 void markAsPaid();
 void displayHistory();
+
+Node* head = nullptr;
 
 int main(void) {
     int startChoice;
@@ -69,6 +70,33 @@ void displayMenu() {
 }
 
 
-void addFee() {
+void addFee(Node*& head) {
+    std::string feeDesc;
+    int urgency;
+    float amount;
+
+    std::cout << "Enter fee type: ";
+    std::getline(std::cin, feeDesc);
+    std::cout << "Enter amount: ₱";
+    std::cin >> amount;
+    std::cout << "Enter the fee urgency (1 - 4)";
+    std::cin >> urgency;
+
+    Node* newNode = new Node();
+    newNode->feeInfo = feeDesc;
+    newNode->amount = amount;
+    newNode->urgency = urgency;
+    newNode->next = nullptr;
+
+    if(head == nullptr) {
+        head = newNode;
+        return;
+    }
     
+    Node* temp = head;
+    while(temp->next != nullptr){
+        temp = temp->next;
+    }
+    temp->next == newNode;
+
 }
