@@ -104,7 +104,10 @@ void addFee(Node*& head) {
 
 void displayFees(Node* head) {
     Node* temp = head;
+    int counter = 1;
     while(temp != nullptr) {
+        std::cout << "Fee #" << counter << '\n';
+        counter++;
         std::cout << "Fee Description: " << temp->feeInfo << '\n';
         std::cout << "Amount: " << temp->amount << '\n';
         std::cout << "Urgency Level: " << temp->next << '\n';
@@ -112,3 +115,7 @@ void displayFees(Node* head) {
     }
 }
 
+void markAsPaid(Node*& head) {
+    std::cout << 
+
+}
