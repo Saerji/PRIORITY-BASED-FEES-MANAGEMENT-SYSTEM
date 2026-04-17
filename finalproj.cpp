@@ -76,6 +76,7 @@ void addFee(Node*& head) {
     float amount;
 
     std::cout << "Enter fee type: ";
+    std::cin.ignore();
     std::getline(std::cin, feeDesc);
     std::cout << "Enter amount: ₱";
     std::cin >> amount;
@@ -97,6 +98,6 @@ void addFee(Node*& head) {
     while(temp->next != nullptr){
         temp = temp->next;
     }
-    temp->next == newNode;
+    temp->next = newNode;
 
 }
