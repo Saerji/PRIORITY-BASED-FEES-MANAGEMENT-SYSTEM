@@ -22,12 +22,12 @@ std::stack<feeRecord> history;
 Node* head = nullptr;
 
 void displayMenu(Node* head);
-void addFee();
-void displayFees();
+void addFee(Node*& head);
+void displayFees(Node* head);
 void displayByUrgency();
-void searchFee();
-void updateFee();
-void markAsPaid();
+void searchFee(Node* head);
+void updateFee(Node*& head);
+void markAsPaid(Node*& head);
 void displayHistory();
 
 int main(void) {
@@ -119,7 +119,7 @@ void displayFees(Node* head) {
         std::cout << "Fee Description: " << temp->feeInfo << '\n';
         std::cout << "Amount: " << temp->amount << '\n';
         std::cout << "Urgency Level: " << temp->urgency << '\n';
-        std::cout << "----------------------------------------";
+        std::cout << "----------------------------------------\n";
         temp = temp->next;
     }
 }
@@ -136,6 +136,11 @@ void markAsPaid(Node*& head) {
     std::cin >> searcher;
 
     searcher--; // in order to make the positions 0-indexed
+
+    if(searcher < 1) {
+        std::cout << "Invalid input.\n";
+        return;
+    }
 
     if(searcher == 0) {
         Node* temp = head;
@@ -163,6 +168,7 @@ void markAsPaid(Node*& head) {
 
     if (toDelete == nullptr) {
         std::cout << "Invalid input. The fee does not exist.";
+        return;
     }
 
     record.feeInfo = toDelete->feeInfo;
