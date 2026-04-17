@@ -17,7 +17,11 @@ struct feeRecord {
     int urgency;
 };
 
-void displayMenu();
+std::stack<feeRecord> history;
+
+Node* head = nullptr;
+
+void displayMenu(Node* head);
 void addFee();
 void displayFees();
 void displayByUrgency();
@@ -25,8 +29,6 @@ void searchFee();
 void updateFee();
 void markAsPaid();
 void displayHistory();
-
-Node* head = nullptr;
 
 int main(void) {
     int startChoice;
@@ -62,11 +64,11 @@ void displayMenu() {
         std::cin >> choice;
 
         switch(choice) {
-            case 1: addFee(); break;
-            case 2: displayFees(); break;
-            case 3: markAsPaid(); break;
-            case 4: searchFee(); break;
-            case 5: displayHistory(); break;
+            case 1: addFee(head); break;
+            case 2: displayFees(head); break;
+            case 3: markAsPaid(head); break;
+            case 4: searchFee(head); break;
+            case 5: displayHistory(head); break;
             default: {
                 std::cout << "Invalid input. Please try again.\n";
                 return;
@@ -116,17 +118,37 @@ void displayFees(Node* head) {
         counter++;
         std::cout << "Fee Description: " << temp->feeInfo << '\n';
         std::cout << "Amount: " << temp->amount << '\n';
-        std::cout << "Urgency Level: " << temp->next << '\n';
+        std::cout << "Urgency Level: " << temp->urgency << '\n';
         std::cout << "----------------------------------------";
+        temp = temp->next;
     }
 }
 
 void markAsPaid(Node*& head) {
-    std::stack<feeRecord> history;
+    if (head == nullptr) {
+        std::cout << "No fees to pay! Good work.\n";
+        return;
+    }
+
     feeRecord record;
     int searcher;
     std::cout << "Enter the fee number of the paid fee: ";
     std::cin >> searcher;
+
+    searcher--; // in order to make the positions 0-indexed
+
+    if(searcher == 0) {
+        Node* temp = head;
+        record.feeInfo = temp->feeInfo;
+        record.amount = temp->amount;
+        record.urgency = temp->urgency;
+
+        history.push(record);
+
+        head = head->next;
+        delete temp;
+        return;
+    }
 
     Node* temp = head;
     for(int i = 0; i < searcher - 1; i++){
@@ -136,14 +158,20 @@ void markAsPaid(Node*& head) {
         }
         temp = temp->next;
     }
-    record.feeInfo = temp->feeInfo;
-    record.amount = temp->amount;
-    record.urgency = temp->urgency;
+
+    Node* toDelete = temp->next;
+
+    if (toDelete == nullptr) {
+        std::cout << "Invalid input. The fee does not exist.";
+    }
+
+    record.feeInfo = toDelete->feeInfo;
+    record.amount = toDelete->amount;
+    record.urgency = toDelete->urgency;
 
     history.push(record);
-    Node* toDelete = temp->next;
+
     temp->next = toDelete->next;
     delete toDelete;
-
 
 }
