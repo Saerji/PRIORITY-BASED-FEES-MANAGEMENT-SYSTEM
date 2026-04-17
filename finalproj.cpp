@@ -18,7 +18,6 @@ struct feeRecord {
 };
 
 std::stack<feeRecord> history;
-
 Node* head = nullptr;
 
 void displayMenu(Node* head);
@@ -68,7 +67,7 @@ void displayMenu() {
             case 2: displayFees(head); break;
             case 3: markAsPaid(head); break;
             case 4: searchFee(head); break;
-            case 5: displayHistory(head); break;
+            case 5: displayHistory(); break;
             default: {
                 std::cout << "Invalid input. Please try again.\n";
                 return;
@@ -76,7 +75,6 @@ void displayMenu() {
         }
     }
 }
-
 
 void addFee(Node*& head) {
     std::string feeDesc;
@@ -117,7 +115,7 @@ void displayFees(Node* head) {
         std::cout << "Fee #" << counter << '\n';
         counter++;
         std::cout << "Fee Description: " << temp->feeInfo << '\n';
-        std::cout << "Amount: " << temp->amount << '\n';
+        std::cout << "Amount: ₱" << temp->amount << '\n';
         std::cout << "Urgency Level: " << temp->urgency << '\n';
         std::cout << "----------------------------------------\n";
         temp = temp->next;
@@ -180,4 +178,28 @@ void markAsPaid(Node*& head) {
     temp->next = toDelete->next;
     delete toDelete;
 
+}
+
+void displayHistory () {
+    if(history.empty()) {
+        std::cout << "No payment history available.\n";
+        return;
+    }
+
+    std::stack<feeRecord> temp = history;
+
+    int counter = 1;
+     
+    while(!temp.empty()) {
+        feeRecord record = temp.top();
+
+        std::cout << "Payment #" << counter << "\n";
+        std::cout << "Fee: " << record.feeInfo << "\n";
+        std::cout << "Amount: ₱" << record.amount << "\n";
+        std::cout << "Urgency: " << record.urgency << "\n";
+        std::cout << "---------------------------------------\n";
+
+        temp.pop();
+        counter++;
+    }
 }
