@@ -11,6 +11,12 @@ struct Node {
     Node* next;
 };
 
+struct feeRecord {
+    std::string feeInfo;
+    float amount;
+    int urgency;
+};
+
 void displayMenu();
 void addFee();
 void displayFees();
@@ -116,6 +122,28 @@ void displayFees(Node* head) {
 }
 
 void markAsPaid(Node*& head) {
-    std::cout << 
+    std::stack<feeRecord> history;
+    feeRecord record;
+    int searcher;
+    std::cout << "Enter the fee number of the paid fee: ";
+    std::cin >> searcher;
+
+    Node* temp = head;
+    for(int i = 0; i < searcher - 1; i++){
+        if(temp->next == nullptr) {
+            std::cout << "Invalid input. Fee does not exist.\n";
+            return;
+        }
+        temp = temp->next;
+    }
+    record.feeInfo = temp->feeInfo;
+    record.amount = temp->amount;
+    record.urgency = temp->urgency;
+
+    history.push(record);
+    Node* toDelete = temp->next;
+    temp->next = toDelete->next;
+    delete toDelete;
+
 
 }
