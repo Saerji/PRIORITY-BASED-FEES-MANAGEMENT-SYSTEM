@@ -101,3 +101,14 @@ void addFee(Node*& head) {
     temp->next = newNode;
 
 }
+
+void displayFees(Node* head) {
+    Node* temp = head;
+    while(temp != nullptr) {
+        std::cout << "Fee Description: " << temp->feeInfo << '\n';
+        std::cout << "Amount: " << temp->amount << '\n';
+        std::cout << "Urgency Level: " << temp->next << '\n';
+        std::cout << "----------------------------------------";
+    }
+}
+
