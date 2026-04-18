@@ -25,7 +25,6 @@ void addFee(Node*& head);
 void displayFees(Node* head);
 void displayByUrgency();
 void searchFee(Node* head);
-void updateFee(Node*& head);
 void markAsPaid(Node*& head);
 void displayHistory();
 
@@ -201,5 +200,73 @@ void displayHistory () {
 
         temp.pop();
         counter++;
+    }
+}
+
+void searchFee(Node* head) {
+    int choice;
+    int searchUrgency;
+    std::string searchDesc;
+    while(true) {
+        std::cout << "Enter the search method you would want to use:\n";
+        std::cout << "1. By fee description\n";
+        std::cout << "2. By urgency level\n";
+        std::cout << "\nEnter your choice: ";
+        std::cin >> choice;
+        if(choice < 1 || choice > 2 || std::cin.fail()) {
+            std::cout << "Invalid input. Please try again.";
+            std::cin.clear();
+            std::cin.ignore(1000, '\n');
+        } else {
+            break;
+        }
+    }
+
+    Node* temp = head;
+    bool isFound = false;
+
+    if (choice == 1) {
+        std::cout << "Enter the fee description of the fee you wanted to search: ";
+        std::cin.ignore();
+        std::getline(std::cin, searchDesc);
+        if(temp == nullptr) {
+            std::cout << "Fee not found. The records are empty.";
+            return;
+        }
+
+        while(temp != nullptr) {
+            if(temp->feeInfo == searchDesc) {
+                std::cout << "Fee found!\n";
+                std::cout << temp->feeInfo << '\n';
+                std::cout << temp->amount << '\n';
+                std::cout << temp->urgency << '\n';
+                std::cout << "----------------------------------------";
+                
+                isFound = true;
+            }
+            temp = temp->next;
+        }
+        if(!isFound) {
+            std::cout << "Fee not found. Try again.";
+        }
+    } else {
+        std::cout << "Enter the urgency level of the fee you wanted to search: ";
+        std::cin >> searchUrgency;
+        
+        while(temp != nullptr) {
+            if(temp->urgency == searchUrgency) {
+                std::cout << "Fee found!\n";
+                std::cout << temp->feeInfo << '\n';
+                std::cout << temp->amount << '\n';
+                std::cout << temp->urgency << '\n';
+                std::cout << "----------------------------------------";
+                
+                isFound = true;
+            }
+            temp = temp->next;
+        }
+        if(!isFound) {
+            std::cout << "Fee not found. Try again.";
+        }
     }
 }
