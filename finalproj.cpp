@@ -4,6 +4,7 @@
 #include <stack>
 #include <queue>
 
+
 struct Node {
     std::string feeInfo;
     float amount;
@@ -17,17 +18,24 @@ struct feeRecord {
     int urgency;
 };
 
+struct Compare { // comparator (helper for priority queue)
+    bool operator()(Node* a, Node* b) {
+        return a->urgency < b->urgency;
+    }
+};
+
 std::stack<feeRecord> history;
 Node* head = nullptr;
 
 void urgentInMenu (Node* head);
 void displayMenu();
 void addFee(Node*& head);
-void displayFees(Node* head);
+void displayFees();
+void displayByInitialOrder (Node* head);
+void displayByUrgency(Node* head);
 void searchFee(Node* head);
 void markAsPaid(Node*& head);
 void displayHistory();
-void displayByUrgency();
 
 
 int main(void) {
@@ -67,7 +75,7 @@ void displayMenu() {
 
         switch(choice) {
             case 1: addFee(head); break;
-            case 2: displayFees(head); break;
+            case 2: displayFees(); break;
             case 3: markAsPaid(head); break;
             case 4: searchFee(head); break;
             case 5: displayHistory(); break;
@@ -111,7 +119,32 @@ void addFee(Node*& head) {
 
 }
 
-void displayFees(Node* head) {
+void displayByUrgency (Node* head){
+    std::priority_queue<Node*, std::vector<Node*>, Compare> pq; //vector is used by priority queues, it is just shown in the code since we're dealing with nodes instead of data types
+    
+    Node* temp = head;
+    while(temp != nullptr) {
+        pq.push(temp);
+        temp = temp->next;
+    }
+
+    int counter = 1;
+
+    while(!pq.empty()) {
+        Node* current = pq.top();
+        pq.pop();
+
+        std::cout << "Fee #" << counter << ":\n";
+        counter++;
+        std::cout << "Description: " << current->feeInfo << "\n";
+        std::cout << "Amount: " << current->amount << "\n";
+        std::cout << "Urgency: " << current->urgency << "\n";
+        std::cout << "----------------------------------------\n";    
+    }
+    
+}
+
+void displayByInitialOrder (Node* head){
     Node* temp = head;
     int counter = 1;
     
@@ -129,6 +162,25 @@ void displayFees(Node* head) {
     }
 }
 
+void displayFees() {
+    int choice;
+
+    std::cout << "Choose history display method:\n";
+    std::cout << "1. By add order\n";
+    std::cout << "2. By urgency level\n\n";
+
+    std::cout << "Enter choice: ";
+    std::cin >> choice;
+
+    if(choice == 1) {
+        displayByInitialOrder(head);
+    } else if (choice == 2) {
+        displayByUrgency(head);
+    } else {
+        std::cout << "Invalid input. Going back to main menu . . .\n";
+    }
+}
+
 void markAsPaid(Node*& head) {
     if (head == nullptr) {
         std::cout << "No fees to pay! Good work.\n";
@@ -136,55 +188,38 @@ void markAsPaid(Node*& head) {
     }
 
     feeRecord record;
-    int searcher;
-    std::cout << "Enter the fee number of the paid fee: ";
-    std::cin >> searcher;
+    std::string searcher;
+    std::cout << "Enter the fee description of the paid fee: ";
+    std::cin.ignore();
+    std::getline(std::cin, searcher);
 
-    searcher--; // in order to make the positions 0-indexed
-
-    if(searcher < 0) {
-        std::cout << "Invalid input.\n";
-        return;
-    }
-
-    if(searcher == 0) {
-        Node* temp = head;
-        record.feeInfo = temp->feeInfo;
-        record.amount = temp->amount;
-        record.urgency = temp->urgency;
-
-        history.push(record);
-
-        head = head->next;
-        delete temp;
-        return;
-    }
 
     Node* temp = head;
-    for(int i = 0; i < searcher - 1; i++){
-        if(temp->next == nullptr) {
-            std::cout << "Invalid input. Fee does not exist.\n";
-            return;
-        }
+    Node* prev = nullptr;
+    while(temp != nullptr && temp->feeInfo != searcher){
+        prev = temp;
         temp = temp->next;
     }
 
-    Node* toDelete = temp->next;
+    if(temp == nullptr) {
+            std::cout << "Invalid input. Fee does not exist.\n";
+            return;
+        }
 
-    if (toDelete == nullptr) {
-        std::cout << "Invalid input. The fee does not exist.\n";
-        return;
-    }
-
-    record.feeInfo = toDelete->feeInfo;
-    record.amount = toDelete->amount;
-    record.urgency = toDelete->urgency;
+    std::cout << "Fee is now marked as paid.\n";
+    record.feeInfo = temp->feeInfo;
+    record.amount = temp->amount;
+    record.urgency = temp->urgency;
 
     history.push(record);
 
-    temp->next = toDelete->next;
-    delete toDelete;
-    std::cout << "Fee is now marked as paid.\n";
+    if(prev == nullptr) {
+        head = head->next;
+    } else {
+        prev->next = temp->next;
+    }
+
+    delete temp;
 
 }
 
@@ -220,9 +255,10 @@ void searchFee(Node* head) {
         std::cout << "Enter the search method you would want to use:\n";
         std::cout << "1. By fee description\n";
         std::cout << "2. By urgency level\n";
+        std::cout << "3. Back to main menu\n";
         std::cout << "\nEnter your choice: ";
         std::cin >> choice;
-        if(choice < 1 || choice > 2 || std::cin.fail()) {
+        if(choice < 1 || choice > 3 || std::cin.fail()) {
             std::cout << "Invalid input. Please try again.";
             std::cin.clear();
             std::cin.ignore(1000, '\n');
@@ -246,9 +282,9 @@ void searchFee(Node* head) {
         while(temp != nullptr) {
             if(temp->feeInfo == searchDesc) {
                 std::cout << "Fee found!\n";
-                std::cout << temp->feeInfo << '\n';
-                std::cout << temp->amount << '\n';
-                std::cout << temp->urgency << '\n';
+                std::cout << "Description:" << temp->feeInfo << '\n';
+                std::cout << "Amount: " << temp->amount << '\n';
+                std::cout << "Urgency Level: " << temp->urgency << '\n';
                 std::cout << "----------------------------------------\n";
                 
                 isFound = true;
@@ -258,7 +294,7 @@ void searchFee(Node* head) {
         if(!isFound) {
             std::cout << "Fee not found. Try again.";
         }
-    } else {
+    } else if (choice == 2) {
         std::cout << "Enter the urgency level of the fee you wanted to search: ";
         std::cin >> searchUrgency;
         
@@ -277,6 +313,9 @@ void searchFee(Node* head) {
         if(!isFound) {
             std::cout << "Fee not found. Try again.\n";
         }
+    } else {
+        std::cout << "Going back to main menu . . .\n";
+        return;
     }
 }
 
