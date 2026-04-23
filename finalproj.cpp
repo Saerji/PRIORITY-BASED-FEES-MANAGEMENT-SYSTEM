@@ -20,13 +20,15 @@ struct feeRecord {
 std::stack<feeRecord> history;
 Node* head = nullptr;
 
-void displayMenu(Node* head);
+void urgentInMenu (Node* head);
+void displayMenu();
 void addFee(Node*& head);
 void displayFees(Node* head);
-void displayByUrgency();
 void searchFee(Node* head);
 void markAsPaid(Node*& head);
 void displayHistory();
+void displayByUrgency();
+
 
 int main(void) {
     int startChoice;
@@ -49,6 +51,7 @@ int main(void) {
 void displayMenu() {
     int choice;
     while(true) {
+        urgentInMenu(head);
         std::cout << "==========\n";
         std::cout << std::setw(5) << "Main Menu" << std::setw(5) << "\n";
         std::cout << "==========\n";
@@ -57,8 +60,9 @@ void displayMenu() {
         std::cout << "3. Mark Fee As Paid\n";
         std::cout << "4. Search Fee\n";
         std::cout << "5. Display Payment History\n";
+        std::cout << "6. Exit";
 
-        std::cout << "\n Enter your choice: ";
+        std::cout << "\nEnter your choice: ";
         std::cin >> choice;
 
         switch(choice) {
@@ -67,9 +71,9 @@ void displayMenu() {
             case 3: markAsPaid(head); break;
             case 4: searchFee(head); break;
             case 5: displayHistory(); break;
+            case 6: std::cout << "Exiting Program . . ."; return;
             default: {
                 std::cout << "Invalid input. Please try again.\n";
-                return;
             }
         }
     }
@@ -85,7 +89,7 @@ void addFee(Node*& head) {
     std::getline(std::cin, feeDesc);
     std::cout << "Enter amount: ₱";
     std::cin >> amount;
-    std::cout << "Enter the fee urgency (1 - 4)";
+    std::cout << "Enter the fee urgency (1 - 4): ";
     std::cin >> urgency;
 
     Node* newNode = new Node();
@@ -110,6 +114,10 @@ void addFee(Node*& head) {
 void displayFees(Node* head) {
     Node* temp = head;
     int counter = 1;
+    
+    if(head == nullptr) {
+        std::cout << "No fees available! Good work.\n";
+    }
     while(temp != nullptr) {
         std::cout << "Fee #" << counter << '\n';
         counter++;
@@ -134,7 +142,7 @@ void markAsPaid(Node*& head) {
 
     searcher--; // in order to make the positions 0-indexed
 
-    if(searcher < 1) {
+    if(searcher < 0) {
         std::cout << "Invalid input.\n";
         return;
     }
@@ -164,7 +172,7 @@ void markAsPaid(Node*& head) {
     Node* toDelete = temp->next;
 
     if (toDelete == nullptr) {
-        std::cout << "Invalid input. The fee does not exist.";
+        std::cout << "Invalid input. The fee does not exist.\n";
         return;
     }
 
@@ -176,6 +184,7 @@ void markAsPaid(Node*& head) {
 
     temp->next = toDelete->next;
     delete toDelete;
+    std::cout << "Fee is now marked as paid.\n";
 
 }
 
@@ -240,7 +249,7 @@ void searchFee(Node* head) {
                 std::cout << temp->feeInfo << '\n';
                 std::cout << temp->amount << '\n';
                 std::cout << temp->urgency << '\n';
-                std::cout << "----------------------------------------";
+                std::cout << "----------------------------------------\n";
                 
                 isFound = true;
             }
@@ -259,14 +268,39 @@ void searchFee(Node* head) {
                 std::cout << temp->feeInfo << '\n';
                 std::cout << temp->amount << '\n';
                 std::cout << temp->urgency << '\n';
-                std::cout << "----------------------------------------";
+                std::cout << "----------------------------------------\n";
                 
                 isFound = true;
             }
             temp = temp->next;
         }
         if(!isFound) {
-            std::cout << "Fee not found. Try again.";
+            std::cout << "Fee not found. Try again.\n";
         }
     }
+}
+
+void urgentInMenu (Node* head) {
+    if(head == nullptr) {
+        std::cout << "\nThere's still no urgent fees found.\n";
+        std::cout << "----------------------------------------\n";
+        return;
+    }
+
+    Node* temp = head;
+    Node* mostUrgent = head;
+    while(temp != nullptr) {
+        if(temp->urgency > mostUrgent->urgency) {
+            mostUrgent = temp;
+            
+        }
+        temp = temp->next;
+    }
+
+    
+    std::cout << "\nUrgent fee:\n";
+    std::cout << "Description: " << mostUrgent->feeInfo << "\n";
+    std::cout << "Amount:" << mostUrgent->amount << "\n";
+    std::cout << "Please pay it immediately.\n"; 
+    std::cout << "----------------------------------------\n";
 }
