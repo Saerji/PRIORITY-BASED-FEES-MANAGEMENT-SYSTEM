@@ -5,14 +5,14 @@
 #include <queue>
 
 
-struct Node {
+struct Node { // Node declaration
     std::string feeInfo;
     float amount;
     int urgency;
     Node* next;
 };
 
-struct feeRecord {
+struct feeRecord { // struct used for the stacks
     std::string feeInfo;
     float amount;
     int urgency;
@@ -24,18 +24,18 @@ struct Compare { // comparator (helper for priority queue)
     }
 };
 
-std::stack<feeRecord> history;
+std::stack<feeRecord> history; // stakcs used for payment history
 Node* head = nullptr;
 
-void urgentInMenu (Node* head);
-void displayMenu();
-void addFee(Node*& head);
-void displayFees();
-void displayByInitialOrder (Node* head);
-void displayByUrgency(Node* head);
-void searchFee(Node* head);
-void markAsPaid(Node*& head);
-void displayHistory();
+void urgentInMenu (Node* head); // used in printing one of the most urgent fee in the menu
+void displayMenu(); // main menu
+void addFee(Node*& head); // function used to add fee record
+void displayFees(); // used as a connector to print impending fees using 2 methods
+void displayByInitialOrder (Node* head); // display fees depending on the order when the fee/s is/are added
+void displayByUrgency(Node* head); //display fees based on their urgency using priority queues
+void searchFee(Node* head); // function used to search fees by either the fees' description or urgency level
+void markAsPaid(Node*& head); // function used to delete fees and marking them as paid, also pushed them to the stacks in order to display or put them in payment history.
+void displayHistory(); // function used to access the stack and printing it as the payment history of the user
 
 
 int main(void) {
