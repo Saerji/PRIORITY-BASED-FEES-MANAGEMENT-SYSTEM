@@ -73,6 +73,19 @@ void displayMenu() {
         std::cout << "\nEnter your choice: ";
         std::cin >> choice;
 
+        if(std::cin.fail()) {
+            std::cout << "Invalid input! Must be a number.\n";
+            std::cin.clear();
+            std::cin.ignore(1000, '\n');
+            continue; // ask again
+        }
+
+        // 🔥 HANDLE OUT OF RANGE
+        if(choice < 1 || choice > 6) {
+            std::cout << "Invalid choice. Please enter 1–6.\n";
+            continue;
+        }
+        
         switch(choice) {
             case 1: addFee(head); break;
             case 2: displayFees(); break;
@@ -201,7 +214,12 @@ void displayFees() {
     std::cout << "Enter choice: ";
     std::cin >> choice;
 
-    if(choice == 1) {
+    if(std::cin.fail()) {
+        std::cout << "Invalid input! Must be a number.\n";
+        std::cin.clear();              // reset error
+        std::cin.ignore(1000, '\n');   // discard bad input
+    }
+    else if(choice == 1) {
         displayByInitialOrder(head);
     } else if (choice == 2) {
         displayByUrgency(head);
