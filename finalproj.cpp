@@ -92,9 +92,18 @@ void addFee(Node*& head) {
     int urgency;
     float amount;
 
-    std::cout << "Enter fee type: ";
-    std::cin.ignore();
-    std::getline(std::cin, feeDesc);
+    while(true){
+        std::cout << "Enter fee type: ";
+        std::cin.ignore();
+        std::getline(std::cin, feeDesc);
+
+        if(feeDesc.empty()) {
+            std::cout << "Fee description cannot be empty.\n";
+        } else {
+            break;
+        }
+    }
+
     while(true) {
         std::cout << "Enter amount: ₱";
         std::cin >> amount;
@@ -107,9 +116,19 @@ void addFee(Node*& head) {
             break;
         }
     }
-    std::cout << "Enter the fee urgency (1 - 4): ";
-    std::cin >> urgency;
 
+    while(true){
+        std::cout << "Enter the fee urgency (1 - 4): ";
+        std::cin >> urgency;
+
+        if(std::cin.fail() || urgency < 1 || urgency > 4) {
+            std::cout << "Invalid input. Please enter numbers between 1 - 4 only.\n";
+            std::cin.clear();
+            std::cin.ignore(1000, '\n');
+        } else {
+            break;
+        }
+    }
     Node* newNode = new Node();
     newNode->feeInfo = feeDesc;
     newNode->amount = amount;
