@@ -95,8 +95,18 @@ void addFee(Node*& head) {
     std::cout << "Enter fee type: ";
     std::cin.ignore();
     std::getline(std::cin, feeDesc);
-    std::cout << "Enter amount: ₱";
-    std::cin >> amount;
+    while(true) {
+        std::cout << "Enter amount: ₱";
+        std::cin >> amount;
+
+        if(std::cin.fail() || amount <= 0) {
+            std::cout << "Invalid amount. Please enter a positive number.\n";
+            std::cin.clear();
+            std::cin.ignore(1000, '\n');
+        } else {
+            break;
+        }
+    }
     std::cout << "Enter the fee urgency (1 - 4): ";
     std::cin >> urgency;
 
